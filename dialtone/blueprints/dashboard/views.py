@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-dashboard = Blueprint('api', __name__)
+dashboard = Blueprint('dashboard', __name__)
 
 
 
@@ -14,7 +14,7 @@ def calls():
     pass
 
 
-@dashboard.route('/sms/', method=['GET', 'POST'])
+@dashboard.route('/sms/', methods=['GET', 'POST'])
 def sms():
     pass
 

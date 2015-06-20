@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import os
 
 from dialtone.utils import phone
@@ -21,15 +20,6 @@ PHONES = map(phone.normalize, os.environ.get('PHONES', '').split(','))
 
 # Voice profile to use
 PROFILE = os.environ.get('PROFILE', 'alice')
-
-# List of team members
-TEAM = os.environ.get('TEAM', '').split(',')
-TEAM = map(lambda s: tuple(s.split(':')), TEAM)
-TEAM = map(lambda t: phone.normalize(t[1]), TEAM)
-TEAM = OrderedDict(TEAM)
-
-# Organization info
-ORG_NAME = os.environ.get('ORG_NAME')
 
 # Twilio account sid
 TWILIO_SID = os.environ.get('TWILIO_SID')

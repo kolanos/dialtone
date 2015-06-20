@@ -19,7 +19,7 @@ class Twilio(object):
         self.app = app
         self.sid = self.app.config.get('TWILIO_SID')
         self.token = self.app.config.get('TWILIO_TOKEN')
-        self.client = TwilioRestClient(self.sid, self.token)
+        self.client = TwilioRestClient(account=self.sid, token=self.token)
         self.validator = RequestValidator(self.token)
 
     def __getattr__(self, name):

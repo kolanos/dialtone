@@ -10,7 +10,6 @@ from dialtone.extensions import twilio
 def create_app(name=__name__):
     app = Flask(name)
     app.config.from_object('dialtone.config')
-    app.config.from_envvar('DIALTONE_SETTINGS')
     twilio.init_app(app)
     app.register_blueprint(api)
     app.register_blueprint(call)

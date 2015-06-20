@@ -1,1 +1,1 @@
-web: gunicorn dialtone.app.app --log-file -
+web: gunicorn dialtone.wsgi:app --log-file -
