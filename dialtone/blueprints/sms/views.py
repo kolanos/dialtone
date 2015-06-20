@@ -1,13 +1,13 @@
 from flask import Blueprint
 
-sms = Blueprint('sms', __name__)
+bp = Blueprint('sms', __name__)
 
 
-@sms.route('/twiml/sms/fallback/', methods=['POST'])
-def twiml_sms_fallback():
+@bp.route('/twiml/sms/fallback/', methods=['POST'])
+def sms_fallback():
     pass
 
 
-@sms.route('/twiml/sms/', methods=['POST'])
-def twiml_sms():
+@bp.route('/twiml/sms/', methods=['POST'])
+def sms():
     pass

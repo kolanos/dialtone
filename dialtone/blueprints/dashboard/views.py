@@ -1,29 +1,28 @@
 from flask import Blueprint
 
-dashboard = Blueprint('dashboard', __name__)
+bp = Blueprint('dashboard', __name__)
 
 
-
-@dashboard.route('/')
+@bp.route('/')
 def root():
     return 'hello'
 
 
-@dashboard.route('/calls')
+@bp.route('/calls')
 def calls():
     pass
 
 
-@dashboard.route('/sms/', methods=['GET', 'POST'])
+@bp.route('/sms/', methods=['GET', 'POST'])
 def sms():
     pass
 
 
-@dashboard.route('/recordings/', methods=['GET'])
+@bp.route('/recordings/', methods=['GET'])
 def recordings():
     pass
 
 
-@dashboard.route('/team/')
+@bp.route('/team/')
 def team():
     pass

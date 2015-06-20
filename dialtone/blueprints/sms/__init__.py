@@ -1,1 +1,1 @@
-from dialtone.blueprints.sms.views import sms
+from dialtone.blueprints.sms.views import bp as sms

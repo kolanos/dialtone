@@ -2,46 +2,51 @@ from flask import Blueprint
 
 from dialtone.extensions import twilio
 
-call = Blueprint('call', __name__)
+bp = Blueprint('call', __name__)
 
 
-@call.route('/twiml/call/fallback/', methods=['POST'])
+@bp.route('/twiml/call/fallback/', methods=['POST'])
 @twilio.twiml_response
-def twiml_call_fallback():
+def call_fallback():
+    response = twilio.response()
+    response.say('Sorry, an error occured.')
+    return response
+
+
+@bp.route('/twiml/call/', methods=['POST'])
+@twilio.twiml_response
+def call():
+    response = twilio.response()
+    response.say('oh, hi mark')
+    return response
     pass
 
 
-@call.route('/twiml/call/', methods=['POST'])
+@bp.route('/twiml/call/confirm/', methods=['POST'])
 @twilio.twiml_response
-def twiml_call():
+def call_confirm():
     pass
 
 
-@call.route('/twiml/call/confirm/', methods=['POST'])
+@bp.route('/twiml/call/status/', methods=['POST'])
 @twilio.twiml_response
-def twiml_call_confirm():
+def call_status():
     pass
 
 
-@call.route('/twiml/call/status/', methods=['POST'])
+@bp.route('/twiml/call/record/', methods=['POST'])
 @twilio.twiml_response
-def twiml_call_status():
+def call_record():
     pass
 
 
-@call.route('/twiml/call/record/', methods=['POST'])
+@bp.route('/twiml/dial/', methods=['POST'])
 @twilio.twiml_response
-def twiml_call_record():
+def dial():
     pass
 
 
-@call.route('/twiml/dial/', methods=['POST'])
+@bp.route('/twiml/dial/status/', methods=['POST'])
 @twilio.twiml_response
-def twiml_dial():
-    pass
-
-
-@call.route('/twiml/dial/status/', methods=['POST'])
-@twilio.twiml_response
-def twiml_dial_status():
+def dial_status():
     pass

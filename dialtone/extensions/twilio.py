@@ -5,8 +5,8 @@ from functools import wraps
 from flask import Response
 from flask import abort
 from flask import request
-from twilio.rest import TwilioRestClient
 from twilio import twiml
+from twilio.rest import TwilioRestClient
 from twilio.util import RequestValidator
 
 
@@ -58,3 +58,23 @@ class Twilio(object):
                 response = response.toxml()
             return Response(response, content_type='text/xml; charset=utf-8')
         return decorated_view
+
+    def dictify(self, obj, classkey=None):
+        if isinstance(obj, dict):
+            data = {}
+            for (k, v) in obj.items():
+                data[k] = self.dictify(v, classkey)
+            return data
+        elif hasattr(obj, "_ast"):
+            return self.dictify(obj._ast())
+        elif hasattr(obj, "__iter__"):
+            return [self.dictify(v, classkey) for v in obj]
+        elif hasattr(obj, "__dict__"):
+            data = dict([(key, self.dictify(value, classkey))
+                for key, value in obj.__dict__.iteritems() 
+                if not callable(value) and not key.startswith('_')])
+            if classkey is not None and hasattr(obj, "__class__"):
+                data[classkey] = obj.__class__.__name__
+            return data
+        else:
+            return obj

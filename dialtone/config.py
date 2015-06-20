@@ -6,6 +6,7 @@ from dialtone.utils import phone
 # Flask configuration
 #
 
+DEBUG = True
 SECRET_KEY = os.environ.get('SECREt_KEY', 'shhhh')
 
 #

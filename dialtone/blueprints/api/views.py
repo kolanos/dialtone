@@ -1,30 +1,34 @@
 from flask import Blueprint
+from flask import jsonify
 
 from dialtone.extensions import twilio
 
-api = Blueprint('api', __name__, url_prefix='/api')
+bp = Blueprint('api', __name__, url_prefix='/api')
 
 
-@api.route('/')
+@bp.route('/')
 def root():
-    return twilio.accounts.get(twilio.sid)
+    account = twilio.accounts.get(twilio.sid)
+    info = {
+        'status': account.status}
+    return jsonify(info)
 
 
-@api.route('/calls/')
+@bp.route('/calls/')
 def calls():
-    return twilio.calls.list()
+    return jsonify(twilio.calls.list())
 
 
-@api.route('/calls/<id>/')
+@bp.route('/calls/<id>/')
 def call(id):
-    return twilio.calls.get(id)
+    return jsonify(twilio.calls.get(id))
 
 
-@api.route('/sms/')
+@bp.route('/sms/')
 def sms():
-    return twilio.messages.list()
+    return jsonify(twilio.messages.list())
 
 
-@api.route('/recordings/')
+@bp.route('/recordings/')
 def recordings():
-    return twilio.recordings.list()
+    return jsonify(twilio.recordings.list())
