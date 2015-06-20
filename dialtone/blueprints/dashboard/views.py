@@ -6,7 +6,7 @@ dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/')
 def root():
-    pass
+    return 'hello'
 
 
 @dashboard.route('/calls')
