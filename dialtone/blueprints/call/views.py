@@ -11,7 +11,7 @@ def call_fallback():
     pass
 
 
-@call.route('/twiml/call', methods=['POST'])
+@call.route('/twiml/call/', methods=['POST'])
 @twilio.twiml_response
 def call():
     pass

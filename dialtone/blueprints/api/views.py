@@ -7,20 +7,10 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 @api.route('/')
 def root():
-    return twilio.account.get()
+    return twilio.accounts.get(twilio.sid)
 
 
-@api.route('/team/')
-def team():
-    return team.list()
-
-
-@api.route('/team/humans/')
-def humans():
-    return team.humans()
-
-
-@api.route('/calls//')
+@api.route('/calls/')
 def calls():
     return twilio.calls.list()
 
@@ -32,7 +22,7 @@ def call(id):
 
 @api.route('/sms/')
 def sms():
-    return twilio.sms.list()
+    return twilio.messages.list()
 
 
 @api.route('/recordings/')

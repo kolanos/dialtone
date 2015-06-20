@@ -1,3 +1,5 @@
 Flask
+nltk
 phonenumbers
 twilio
+gunicorn

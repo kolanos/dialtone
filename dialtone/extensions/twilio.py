@@ -17,10 +17,10 @@ class Twilio(object):
 
     def init_app(self, app):
         self.app = app
-        self.account_sid = self.app.config.get('TWILIO_ACCOUNT_SID')
-        self.auth_token = self.app.config.get('TWILIO_AUTH_TOKEN')
-        self.client = TwilioRestClient(self.account_sid, self.auth_token)
-        self.validator = RequestValidator(self.auth_token)
+        self.sid = self.app.config.get('TWILIO_SID')
+        self.token = self.app.config.get('TWILIO_TOKEN')
+        self.client = TwilioRestClient(self.sid, self.token)
+        self.validator = RequestValidator(self.token)
 
     def __getattr__(self, name):
         if hasattr(self.client, name):
@@ -54,5 +54,7 @@ class Twilio(object):
         @wraps(func)
         def decorated_view(*args, **kwargs):
             response = func(*args, **kwargs)
+            if isinstance(response, twiml.Response):
+                response = response.toxml()
             return Response(response, content_type='text/xml; charset=utf-8')
         return decorated_view

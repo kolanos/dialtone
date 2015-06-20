@@ -1,3 +1,20 @@
+from importlib import import_module
+
+from flask import current_app
+
+
+def load_profile():
+    parts = current_app.config['PROFILE'].split('.')
+    klass = parts.pop()
+    path = '.'.join(parts)
+    module = import_module(path)
+    if not hasattr(module, klass):
+        raise ImportError('{} profile not found at {}'.format(
+            klass, path))
+    profile = getattr(module, klass)()
+    return profile
+
+
 class Profile(object):
     @property
     def messages(self):
