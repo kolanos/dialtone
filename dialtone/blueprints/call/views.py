@@ -22,21 +22,21 @@ def call_fallback():
 @twilio.twiml_response
 def call():
     response = twilio.response()
-    origin = request.params.get('from')
-    with response.dial(action=url_for('.call_status', external=True)) as d:
+    origin = request.values.get('from')
+    with response.dial(action=url_for('.call_status', _external=True)) as d:
         for phone in current_app.config.get('PHONES', []):
             d.number(
                 phone,
-                url=url_for('.call_confirm', external=True, origin=origin))
+                url=url_for('.call_confirm', _external=True, origin=origin))
     return response
 
 
-@bp.route('/twiml/call/confirm/', methods=['POST'])
+@bp.route('/twiml/call/confirm/', methods=['GET', 'POST'])
 @twilio.twiml_response
 def call_confirm():
     response = twilio.response()
-    origin = request.params.get('origin')
-    digits = request.params.get('digits')
+    origin = request.values.get('origin')
+    digits = request.values.get('digits')
     if digits:
         return response
     msg = 'You have a call from {}, press # to accept.'
@@ -51,12 +51,12 @@ def call_confirm():
 @twilio.twiml_response
 def call_status():
     response = twilio.response()
-    status = request.params.get('DialCallStatus')
+    status = request.values.get('DialCallStatus')
     if status in ['failed', 'busy', 'no-answer', 'canceled']:
         msg = ('The person you are trying to call is currently busy. '
                'Please record a message after the beep.')
         response.say(msg)
-        response.record(action=url_for('.call_record', external=True))
+        response.record(action=url_for('.call_record', _external=True))
     return response
 
 
@@ -73,11 +73,11 @@ def call_record():
 @twilio.twiml_response
 def dial():
     response = twilio.response()
-    digits = request.params.get('digits')
+    digits = request.values.get('digits')
     response.dial(
         digits,
         callerId=current_app.config.get('OUTGOING_NUMBER'),
-        action=url_for('.dial_status', external=True))
+        action=url_for('.dial_status', _external=True))
     return response
 
 
@@ -85,7 +85,7 @@ def dial():
 @twilio.twiml_response
 def dial_status():
     response = twilio.response()
-    status = request.params.get('DialCallStatus')
+    status = request.values.get('DialCallStatus')
     if status in ['failed', 'busy', 'no-answer', 'canceled']:
         msg = ('Sorry, your call could not be completed. '
                'Please try again later.')

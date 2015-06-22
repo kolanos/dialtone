@@ -17,25 +17,30 @@ class Twilio(object):
             self.init_app(app)
 
     def init_app(self, app):
-        self.sid = self.app.config.get('TWILIO_SID')
-        self.token = self.app.config.get('TWILIO_TOKEN')
+        self.sid = app.config.get('TWILIO_SID')
+        self.token = app.config.get('TWILIO_TOKEN')
         self.client = TwilioRestClient(account=self.sid, token=self.token)
         self.validator = RequestValidator(self.token)
 
     def __getattr__(self, name):
-        if hasattr(self.client, name):
+        if hasattr(self, 'client') and hasattr(self.client, name):
             return getattr(self.client, name)
-        return super(Twilio, self).__getattr__(name)
+        raise AttributeError('%r has no attribute %r' % (
+            self.__class__, name))
 
     @property
     def response(self):
         return TwiMLResponse
 
+    @property
+    def twiml(self):
+        return twiml
+
     def validate_request(self, func):
         """Decorator to validate that the request is coming from Twilio."""
         @wraps(func)
         def decorated_view(*args, **kwargs):
-            if self.app.TESTING:
+            if current_app.TESTING:
                 return func(*args, **kwargs)
             url = request.base_url
             vars = request.values
@@ -61,9 +66,9 @@ class TwiMLResponse(twiml.Response):
         """Overload the say method to set the voice and language."""
         kwargs['voice'] = current_app.config.get('VOICE', 'alice')
         kwargs['language'] = current_app.config.get('LANGUAGE', 'en-US')
-        super(TwiMLResponse, self).say(text, **kwargs)
+        return super(TwiMLResponse, self).say(text, **kwargs)
 
     def dial(self, number=None, **kwargs):
         """Overload the dial method to set the timeout."""
         kwargs['timeout'] = current_app.config.get('DIAL_TIMEOUT', 60)
-        super(TwiMLResponse, self).dial(number, **kwargs)
+        return super(TwiMLResponse, self).dial(number, **kwargs)
