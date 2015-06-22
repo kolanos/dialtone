@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from functools import wraps
 
+from flask import current_app
 from flask import Response
 from flask import abort
 from flask import request
@@ -16,7 +17,6 @@ class Twilio(object):
             self.init_app(app)
 
     def init_app(self, app):
-        self.app = app
         self.sid = self.app.config.get('TWILIO_SID')
         self.token = self.app.config.get('TWILIO_TOKEN')
         self.client = TwilioRestClient(account=self.sid, token=self.token)
@@ -29,11 +29,7 @@ class Twilio(object):
 
     @property
     def response(self):
-        return twiml.Response
-
-    @property
-    def twiml(self):
-        return twiml
+        return TwiMLResponse
 
     def validate_request(self, func):
         """Decorator to validate that the request is coming from Twilio."""
@@ -59,22 +55,15 @@ class Twilio(object):
             return Response(response, content_type='text/xml; charset=utf-8')
         return decorated_view
 
-    def dictify(self, obj, classkey=None):
-        if isinstance(obj, dict):
-            data = {}
-            for (k, v) in obj.items():
-                data[k] = self.dictify(v, classkey)
-            return data
-        elif hasattr(obj, "_ast"):
-            return self.dictify(obj._ast())
-        elif hasattr(obj, "__iter__"):
-            return [self.dictify(v, classkey) for v in obj]
-        elif hasattr(obj, "__dict__"):
-            data = dict([(key, self.dictify(value, classkey))
-                for key, value in obj.__dict__.iteritems() 
-                if not callable(value) and not key.startswith('_')])
-            if classkey is not None and hasattr(obj, "__class__"):
-                data[classkey] = obj.__class__.__name__
-            return data
-        else:
-            return obj
+
+class TwiMLResponse(twiml.Response):
+    def say(self, text, **kwargs):
+        """Overload the say method to set the voice and language."""
+        kwargs['voice'] = current_app.config.get('VOICE', 'alice')
+        kwargs['language'] = current_app.config.get('LANGUAGE', 'en-US')
+        super(TwiMLResponse, self).say(text, **kwargs)
+
+    def dial(self, number=None, **kwargs):
+        """Overload the dial method to set the timeout."""
+        kwargs['timeout'] = current_app.config.get('DIAL_TIMEOUT', 60)
+        super(TwiMLResponse, self).dial(number, **kwargs)
