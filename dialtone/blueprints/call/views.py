@@ -1,7 +1,6 @@
 from flask import Blueprint
 from flask import current_app
 from flask import request
-from flask import url_for
 
 from dialtone.extensions import twilio
 
@@ -23,11 +22,12 @@ def call_fallback():
 def call():
     response = twilio.response()
     origin = request.values.get('from')
-    with response.dial(action=url_for('.call_status', _external=True)) as d:
+    response.say('One moment while I attempt to connect you...')
+    with response.dial(action=twilio.action('.call_status')) as d:
         for phone in current_app.config.get('PHONES', []):
             d.number(
                 phone,
-                url=url_for('.call_confirm', _external=True, origin=origin))
+                url=twilio.action('.call_confirm', origin=origin))
     return response
 
 
@@ -56,7 +56,7 @@ def call_status():
         msg = ('The person you are trying to call is currently busy. '
                'Please record a message after the beep.')
         response.say(msg)
-        response.record(action=url_for('.call_record', _external=True))
+        response.record(action=twilio.action('.call_record'))
     return response
 
 
@@ -77,7 +77,7 @@ def dial():
     response.dial(
         digits,
         callerId=current_app.config.get('OUTGOING_NUMBER'),
-        action=url_for('.dial_status', _external=True))
+        action=twilio.action('.dial_status'))
     return response
 
 

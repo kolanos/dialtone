@@ -3,7 +3,7 @@ import phonenumbers
 
 def format(num):
     return str(phonenumbers.format_number(
-        num, phonenumbers.PhoneNumberFormat.INTERNATIONAL))
+        num, phonenumbers.PhoneNumberFormat.E164))
 
 
 def normalize(num, country_code=None):

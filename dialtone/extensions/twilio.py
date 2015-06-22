@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 
+from functools import partial
 from functools import wraps
 
-from flask import current_app
 from flask import Response
 from flask import abort
+from flask import current_app
 from flask import request
+from flask import url_for
 from twilio import twiml
 from twilio.rest import TwilioRestClient
 from twilio.util import RequestValidator
@@ -33,8 +35,8 @@ class Twilio(object):
         return TwiMLResponse
 
     @property
-    def twiml(self):
-        return twiml
+    def action(self):
+        return partial(url_for, _external=True, _scheme='https')
 
     def validate_request(self, func):
         """Decorator to validate that the request is coming from Twilio."""
