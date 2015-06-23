@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from functools import partial
 from functools import wraps
 
-from flask import Response
+from flask import Response as HttpResponse
 from flask import abort
 from flask import current_app
 from flask import request
@@ -32,7 +32,7 @@ class Twilio(object):
 
     @property
     def response(self):
-        return TwiMLResponse
+        return Response
 
     @property
     def action(self):
@@ -59,18 +59,20 @@ class Twilio(object):
             response = func(*args, **kwargs)
             if isinstance(response, twiml.Response):
                 response = response.toxml()
-            return Response(response, content_type='text/xml; charset=utf-8')
+            return HttpResponse(
+                response,
+                content_type='text/xml; charset=utf-8')
         return decorated_view
 
 
-class TwiMLResponse(twiml.Response):
+class Response(twiml.Response):
     def say(self, text, **kwargs):
         """Overload the say method to set the voice and language."""
         kwargs['voice'] = current_app.config.get('VOICE', 'alice')
         kwargs['language'] = current_app.config.get('LANGUAGE', 'en-US')
-        return super(TwiMLResponse, self).say(text, **kwargs)
+        return super(Response, self).say(text, **kwargs)
 
     def dial(self, number=None, **kwargs):
         """Overload the dial method to set the timeout."""
         kwargs['timeout'] = current_app.config.get('DIAL_TIMEOUT', 60)
-        return super(TwiMLResponse, self).dial(number, **kwargs)
+        return super(Response, self).dial(number, **kwargs)
