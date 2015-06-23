@@ -21,28 +21,28 @@ def call_fallback():
 @twilio.twiml_response
 def call():
     response = twilio.response()
-    origin = request.values.get('from')
+    origin = request.values.get('From')
     response.say('One moment while I attempt to connect you...')
-    with response.dial(action=twilio.action('.call_status')) as d:
+    with response.dial(action=twilio.action('.call_status')) as dial:
         for phone in current_app.config.get('PHONES', []):
-            d.number(
+            dial.number(
                 phone,
                 url=twilio.action('.call_confirm', origin=origin))
     return response
 
 
-@bp.route('/twiml/call/confirm/', methods=['GET', 'POST'])
+@bp.route('/twiml/call/confirm/', methods=['POST'])
 @twilio.twiml_response
 def call_confirm():
     response = twilio.response()
     origin = request.values.get('origin')
-    digits = request.values.get('digits')
+    digits = request.values.get('Digits')
     if digits:
+        response.say('Connecting you now...')
         return response
-    msg = 'You have a call from {}, press # to accept.'
-    response.say(msg.format(origin))
-    with response.gather(finishOnKey='#') as g:
-        g.say('Connecting you now...')
+    with response.gather(finishOnKey='#') as gather:
+        msg = 'You have a call from {}, press # to accept.'
+        gather.say(msg.format(origin))
     response.hangup()
     return response
 
@@ -73,7 +73,7 @@ def call_record():
 @twilio.twiml_response
 def dial():
     response = twilio.response()
-    digits = request.values.get('digits')
+    digits = request.values.get('Digits')
     response.dial(
         digits,
         callerId=current_app.config.get('OUTGOING_NUMBER'),
