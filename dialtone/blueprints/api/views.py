@@ -2,7 +2,8 @@ from flask import Blueprint
 from flask import jsonify
 
 from dialtone.extensions import twilio
-from dialtone.utils import todict
+from dialtone.utils.twiml import scrub
+from dialtone.utils.twiml import to_dict
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -15,41 +16,41 @@ def root():
 
 @bp.route('/calls/')
 def calls():
-    calls = [todict(call) for call in twilio.calls.list()]
-    [call.pop('auth') for call in calls]
+    calls = [to_dict(call) for call in twilio.calls.list()]
+    scrub(calls, 'auth')
     return jsonify(items=calls)
 
 
 @bp.route('/calls/<sid>/')
 def call(sid):
-    call = todict(twilio.calls.get(id))
-    call.pop('auth')
+    call = to_dict(twilio.calls.get(id))
+    scrub(call, 'auth')
     return jsonify(call)
 
 
 @bp.route('/messages/')
 def messages():
-    messages = [todict(message) for message in twilio.messages.list()]
-    [message.pop('auth') for message in messages]
+    messages = [to_dict(message) for message in twilio.messages.list()]
+    scrub(messages, 'auth')
     return jsonify(items=messages)
 
 
 @bp.route('/messages/<sid>/')
 def message(sid):
-    message = todict(twilio.messages.get(sid))
-    message.pop('auth')
+    message = to_dict(twilio.messages.get(sid))
+    scrub(message, 'auth')
     return jsonify(message)
 
 
 @bp.route('/recordings/')
 def recordings():
-    recordings = [todict(recording) for recording in twilio.recordings.list()]
-    [recording.pop('auth') for recording in recordings]
+    recordings = [to_dict(recording) for recording in twilio.recordings.list()]
+    scrub(recordings, 'auth')
     return jsonify(items=recordings)
 
 
 @bp.route('/recordings/<sid>/')
 def recording(sid):
-    recording = todict(twilio.recordings.get(sid))
-    recording.pop('auth')
+    recording = to_dict(twilio.recordings.get(sid))
+    scrub(recording, 'auth')
     return jsonify(recording)
