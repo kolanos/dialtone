@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% import "macros/pagination.html" as pagination %}
+{% import "macros/numbers.html" as numbers %}
+
+{% block title %}Messages{% endblock %}
+
+{% block body %}
+    {% for sms in messages.list %}
+    <div class="panel">
+        <table class="list list-sms">
+            <tr>
+                <td class="list-icon">
+                    <div class="tooltip" title="{{ sms.direction|capitalize }} sms, {{ sms.status|capitalize }}">
+                        <i class="ion-android-textsms {% if sms.status == "delivered" or sms.status == "received" %}text-success{% else %}text-error{% endif %}"></i>
+                        {% if sms.direction == "outbound" %}
+                        <i class="ion-android-arrow-forward secondary"></i>
+                        {% else %}
+                        <i class="ion-android-arrow-back secondary"></i>
+                        {% endif %}
+                    </div>
+                </td>
+                <td>{{ numbers.item(sms.from) }}</td>
+                <td>{{ numbers.item(sms.to) }}</td>
+                <td>{{ sms.sentTime|relativeDate }}</td>
+                <td class="list-actions">
+                    <a href="{{ numbers.smsUrl(sms.from.phone) }}">
+                        <i class="ion-android-send"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="list-alternate">{{ sms.body|nl2br }}</td>
+            </tr>
+        </table>
+    </div>
+    {% endfor %}
+    {{ pagination.nav(messages) }}
+{% endblock %}

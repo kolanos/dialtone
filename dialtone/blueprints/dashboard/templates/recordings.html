@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% import "macros/pagination.html" as pagination %}
+{% import "macros/audio.html" as audio %}
+
+{% block title %}Recordings{% endblock %}
+
+{% block body %}
+    <div class="panel">
+        <table class="list list-sms">
+            {% for rc in recordings.list %}
+            <tr>
+                <td class="list-icon">
+                    <div>
+                        <i class="ion-ios-recording"></i>
+                    </div>
+                </td>
+                <td>{{ rc.createdTime|relativeDate }}</td>
+                <td>{{ rc.duration }}s</td>
+                <td>
+                    {{ audio.player(rc.urls.mp3) }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {{ pagination.nav(recordings) }}
+{% endblock %}

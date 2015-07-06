@@ -1,0 +1,15 @@
+{% macro callUrl(num) %}tel:{{ num|urlencode }}{% endmacro %}
+{% macro smsUrl(num) %}sms:{{ num|urlencode }}{% endmacro %}
+
+{% macro item(num) %}
+    {% if num.member %}
+        {% if not num.member.machine %}
+        <i class="ion-android-contact"></i>
+        {% endif %}
+        <a href="{{ callUrl(num.phone) }}" class="tooltip" title="{{ num.phone }}">{{ num.member.name }}</a>
+    {% elif num.alias  %}
+    <span class="help">{{ num.alias }}</span>
+    {% else %}
+    <a href="{{ callUrl(num.phone) }}">{{ num.phone }}</a>
+    {% endif %}
+{% endmacro %}

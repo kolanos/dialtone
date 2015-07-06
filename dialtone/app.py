@@ -3,7 +3,7 @@ from flask import Flask
 from dialtone.blueprints.api import api
 from dialtone.blueprints.call import call
 from dialtone.blueprints.dashboard import dashboard
-from dialtone.blueprints.sms import sms
+from dialtone.blueprints.message import message
 from dialtone.extensions import twilio
 
 
@@ -14,7 +14,7 @@ def create_app(name=__name__):
     app.register_blueprint(api)
     app.register_blueprint(call)
     app.register_blueprint(dashboard)
-    app.register_blueprint(sms)
+    app.register_blueprint(message)
     return app
 
 

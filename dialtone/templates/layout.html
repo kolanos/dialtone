@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Welcome{% endblock %} - {{ profile.name }}</title>
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+        <link href='//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon.png') }}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="navigation">
+                <a class="tab tab-action tooltip tooltip-bottom {% if tab == "status" %}active{% endif %}" href="/" title="Status">
+                    <i class="ion-android-home"></i>
+                </a>
+                <a class="tab tab-action tooltip tooltip-bottom" href="#" data-dialog="dial" title="Dial">
+                    <i class="ion-android-apps"></i>
+                </a>
+                <a class="tab tab-action tooltip tooltip-bottom" href="#" data-dialog="sms" title="New Message">
+                    <i class="ion-android-send"></i>
+                </a>
+                <a class="tab tab-link {% if tab == "calls" %}active{% endif %}" href="/calls">Calls</a>
+                <a class="tab tab-link {% if tab == "sms" %}active{% endif %}" href="/sms">Messages</a>
+                <a class="tab tab-link {% if tab == "recordings" %}active{% endif %}" href="/recordings">Voicemail</a>
+                <a class="tab tab-link {% if tab == "team" %}active{% endif %}" href="/team">Team</a>
+            </div>
+            {% block body %}{% endblock %}
+        </div>
+
+        {% include "dialogs/sms.html" %}
+        {% include "dialogs/dial.html" %}
+
+        <script src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        {% block script %}{% endblock %}
+    </body>
+</html>

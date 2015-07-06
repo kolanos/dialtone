@@ -1,0 +1,40 @@
+<div id="dialog-dial" class="dialog-container">
+    <div class="dialog">
+        <div class="dialog-inner">
+            <div class="dialog-intro">
+                <h1>New Call</h1>
+                <p class="dial-status">Who do you want to call?</p>
+            </div>
+            <input type="hidden" value="{{ capability.token }}" name="token" />
+            <input type="tel" class="dial-input form-control"placeholder="Enter a phone number" />
+            <div class="dialpad">
+                <table>
+                    <tr>
+                        <td><input type="button" value="1" class="dial-button"></td>
+                        <td><input type="button" value="2" class="dial-button"></td>
+                        <td><input type="button" value="3" class="dial-button"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="4" class="dial-button"></td>
+                        <td><input type="button" value="5" class="dial-button"></td>
+                        <td><input type="button" value="6" class="dial-button"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="7" class="dial-button"></td>
+                        <td><input type="button" value="8" class="dial-button"></td>
+                        <td><input type="button" value="9" class="dial-button"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="*" class="dial-button"></td>
+                        <td><input type="button" value="0" class="dial-button"></td>
+                        <td><input type="button" value="#" class="dial-button"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="dialog-controls">
+            <button type="submit" class="do-call">Call</button>
+            <button data-dialog="dial" class="do-hangup">Cancel</button>
+        </div>
+    </div>
+</div>
