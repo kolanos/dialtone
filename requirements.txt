@@ -1,5 +1,6 @@
 Flask
-nltk
-phonenumbers
-twilio
+Flask-Script
 gunicorn
+nltk
+phonenumberslite
+twilio
