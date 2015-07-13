@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}Welcome{% endblock %} - {{ profile.name }}</title>
+        <title>Dialtone{% block title %} - Welcome{% endblock %}</title>
         <link href='//fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
         <link href='//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -23,7 +23,6 @@
                 <a class="tab tab-link {% if tab == "calls" %}active{% endif %}" href="/calls">Calls</a>
                 <a class="tab tab-link {% if tab == "sms" %}active{% endif %}" href="/sms">Messages</a>
                 <a class="tab tab-link {% if tab == "recordings" %}active{% endif %}" href="/recordings">Voicemail</a>
-                <a class="tab tab-link {% if tab == "team" %}active{% endif %}" href="/team">Team</a>
             </div>
             {% block body %}{% endblock %}
         </div>

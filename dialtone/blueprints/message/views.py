@@ -13,4 +13,6 @@ def message_fallback():
     pass
 
 
-
+@bp.route('/twiml/message/status/', methods=['POST'])
+def message_status():
+    pass

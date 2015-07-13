@@ -11,6 +11,7 @@ from flask import url_for
 from twilio import twiml
 from twilio.rest import TwilioRestClient
 from twilio.util import RequestValidator
+from twilio.util import TwilioCapability
 
 
 class Twilio(object):
@@ -30,6 +31,51 @@ class Twilio(object):
         raise AttributeError('%r has no attribute %r' % (
             self.__class__, name))
 
+    def setup(self, app):
+        result = []
+        name = 'dialtone-debug' if app.config['DEBUG'] else 'dialtone'
+        application = self.applications.list(friendly_name=name)
+        if not application:
+            application = self.applications.create(friendly_name=name)
+            result.append(
+                'Application {} ({}) created'.format(
+                    name, application.sid))
+        else:
+            application = application[0]
+            result.append(
+                'Application {} ({}) updated'.format(
+                    name, application.sid))
+        application.update(
+            voice_url=self.action('call.call'),
+            voice_method='POST',
+            voice_fallback_url=self.action('call.call_fallback'),
+            voice_fallback_method='POST',
+            status_callback=self.action('call.call_status'),
+            status_callback_method='POST',
+            voice_caller_id_lookup=False,
+            sms_url=self.action('message.message'),
+            sms_method='POST',
+            sms_fallback_url=self.action('message.message_fallback'),
+            sms_fallback_method='POST',
+            sms_status_callback=self.action('message.message_status'))
+        self.app_sid = application.sid
+        if not app.config['DEBUG']:
+            outgoing_number = app.config['OUTGOING_NUMBER']
+            incoming_phone = self.phone_numbers.list(
+                phone_number=outgoing_number)
+            if not incoming_phone:
+                raise Exception(
+                    'Phone number {} could not be found on this Twilio '
+                    'account.'.format(outgoing_number))
+            else:
+                incoming_phone = incoming_phone[0]
+            incoming_phone.update(
+                voice_application_sid=self.app_sid,
+                sms_application_sid=self.app_sid)
+            result.append('Phone Number {} ({}) updated'.format(
+                incoming_phone.phone_number, incoming_phone.sid))
+        return result
+
     @property
     def response(self):
         return Response
@@ -37,6 +83,12 @@ class Twilio(object):
     @property
     def action(self):
         return partial(url_for, _external=True, _scheme='https')
+
+    def capability_token(self, user):
+        capability = TwilioCapability(self.sid, self.token)
+        capability.allow_client_outgoing(self.app_sid)
+        capability.allow_client_incoming(user)
+        return capability.generate()
 
     def validate_request(self, func):
         """Decorator to validate that the request is coming from Twilio."""
